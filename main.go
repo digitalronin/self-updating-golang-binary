@@ -13,7 +13,7 @@ func main() {
 	rd := releaseData{
 		RepoName:       "self-updating-golang-binary",
 		Owner:          "digitalronin",
-		CurrentVersion: "0.0.1",
+		CurrentVersion: "0.0.3",
 	}
 
 	_, latest := rd.isLatestVersion()
