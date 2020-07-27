@@ -12,37 +12,46 @@ import (
 )
 
 type Release struct {
-	Owner          string
-	RepoName       string
-	CurrentVersion string
-	LatestTag      string `json:"tag_name"`
+  innerStruct myRelease
+}
+
+// These attributes need to be exported so that the json.Unmarshal call works
+// correctly. But we don't want them to be exported to callers of this package,
+// so we wrap them in a private, innner struct which is not exported.
+type myRelease struct {
+  Owner          string
+  RepoName       string
+  CurrentVersion string
+  LatestTag      string `json:"tag_name"`
 }
 
 func New(owner string, repoName string, currentVersion string) Release {
   return Release{
-    Owner: owner,
-    RepoName: repoName,
-    CurrentVersion: currentVersion,
+    myRelease{
+      Owner: owner,
+      RepoName: repoName,
+      CurrentVersion: currentVersion,
+    },
   }
 }
 
 func (rd *Release) IsLatestVersion() (error, bool) {
-	err := rd.getLatestReleaseInfo() // TODO: memoize this
+	err := rd.innerStruct.getLatestReleaseInfo() // TODO: memoize this
 	if err != nil {
 		return err, false
 	}
 
-	return nil, rd.LatestTag == rd.CurrentVersion
+	return nil, rd.innerStruct.LatestTag == rd.innerStruct.CurrentVersion
 }
 
 func (rd *Release) SelfUpgrade() error {
-	fmt.Printf("Update required. Current version: %s, Latest version: %s\n\n", rd.CurrentVersion, rd.LatestTag)
+	fmt.Printf("Update required. Current version: %s, Latest version: %s\n\n", rd.innerStruct.CurrentVersion, rd.innerStruct.LatestTag)
 
 	// download tarball of latest release
-	tempFilePath := "/tmp/" + rd.tarballFilename()
+	tempFilePath := "/tmp/" + rd.innerStruct.tarballFilename()
 
-	fmt.Printf("Downloading latest tarball...\n  %s\n", rd.latestTarballUrl())
-	rd.downloadFile(tempFilePath, rd.latestTarballUrl())
+	fmt.Printf("Downloading latest tarball...\n  %s\n", rd.innerStruct.latestTarballUrl())
+	rd.innerStruct.downloadFile(tempFilePath, rd.innerStruct.latestTarballUrl())
 
 	fmt.Println("Unpacking...")
 	cmd := exec.Command("tar", "xzf", tempFilePath, "--cd", "/tmp/")
@@ -68,27 +77,20 @@ func (rd *Release) SelfUpgrade() error {
 
 // -------------------------------------------------------------
 
-func (rd *Release) latestReleaseUrl() string {
+func (rd *myRelease) latestReleaseUrl() string {
 	releasesUrl := "https://api.github.com/repos/" + rd.Owner + "/" + rd.RepoName + "/releases"
 	return releasesUrl + "/latest"
 }
 
-// TODO: get this working next
-// func (rd *release) downloadLatestTarballUrl() (error, string) {
-// 	downloadTo := "/tmp/" + rd.tarballFilename()
-// 	err := DownloadFile(downloadTo, rd.latestTarballUrl())
-// 	return err, downloadTo
-// }
-
-func (rd *Release) tarballFilename() string {
+func (rd *myRelease) tarballFilename() string {
 	return rd.RepoName + "_" + rd.LatestTag + "_" + runtime.GOOS + "_" + runtime.GOARCH + ".tar.gz"
 }
 
-func (rd *Release) latestTarballUrl() string {
+func (rd *myRelease) latestTarballUrl() string {
 	return "https://github.com/" + rd.Owner + "/" + rd.RepoName + "/releases/download/" + rd.LatestTag + "/" + rd.tarballFilename()
 }
 
-func (rd *Release) getLatestReleaseInfo() error {
+func (rd *myRelease) getLatestReleaseInfo() error {
 	err, body := rd.getLatestReleaseJson()
 	if err != nil {
 		return err
@@ -99,7 +101,7 @@ func (rd *Release) getLatestReleaseInfo() error {
 	return nil
 }
 
-func (rd *Release) getLatestReleaseJson() (error, []byte) {
+func (rd *myRelease) getLatestReleaseJson() (error, []byte) {
 	response, err := http.Get(rd.latestReleaseUrl())
 	if err != nil {
 		return err, nil
@@ -113,7 +115,7 @@ func (rd *Release) getLatestReleaseJson() (error, []byte) {
 
 // DownloadFile will download a url to a local file. It's efficient because it will
 // write as it downloads and not load the whole file into memory.
-func (rd *Release) downloadFile(filepath string, url string) error {
+func (rd *myRelease) downloadFile(filepath string, url string) error {
 	// Get the data
 	resp, err := http.Get(url)
 	if err != nil {
