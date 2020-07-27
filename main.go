@@ -13,7 +13,7 @@ func main() {
 	rd := releaseData{
 		RepoName:       "self-updating-golang-binary",
 		Owner:          "digitalronin",
-		CurrentVersion: "0.0.3",
+		CurrentVersion: "0.0.2",
 	}
 
 	_, latest := rd.isLatestVersion()
@@ -30,7 +30,4 @@ func main() {
 			os.Exit(1)
 		}
 	}
-
-	filename, _ := os.Executable()
-	fmt.Println(filename)
 }

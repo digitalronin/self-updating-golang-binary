@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"os/exec"
 	"runtime"
 )
 
@@ -19,9 +20,29 @@ type releaseData struct {
 
 func (rd *releaseData) SelfUpdate() error {
 	fmt.Println("SelfUpdate...")
+
+  // download tarball of latest release
 	tempFilePath := "/tmp/" + rd.tarballFilename()
 	fmt.Printf("Downloading %s to %s\n", rd.latestTarballUrl(), tempFilePath)
 	rd.downloadFile(tempFilePath, rd.latestTarballUrl())
+
+  fmt.Println("Unpacking the tarball...")
+
+  // unpack tarball into /tmp/
+  cmd := exec.Command("tar", "xzf", tempFilePath, "--cd", "/tmp/")
+  err := cmd.Run()
+  if err != nil {
+    fmt.Println("Error: ", err)
+    return err
+  }
+
+	// move unpacked binary into place
+	filename, _ := os.Executable()
+  cmd = exec.Command("mv", "/tmp/myapp", filename)
+  err = cmd.Run()
+  if err != nil {
+    return err
+  }
 
 	return nil
 }
