@@ -12,27 +12,27 @@ import (
 )
 
 type Release struct {
-  innerStruct myRelease
+	innerStruct myRelease
 }
 
 // These attributes need to be exported so that the json.Unmarshal call works
 // correctly. But we don't want them to be exported to callers of this package,
 // so we wrap them in a private, innner struct which is not exported.
 type myRelease struct {
-  Owner          string
-  RepoName       string
-  CurrentVersion string
-  LatestTag      string `json:"tag_name"`
+	Owner          string
+	RepoName       string
+	CurrentVersion string
+	LatestTag      string `json:"tag_name"`
 }
 
 func New(owner string, repoName string, currentVersion string) Release {
-  return Release{
-    myRelease{
-      Owner: owner,
-      RepoName: repoName,
-      CurrentVersion: currentVersion,
-    },
-  }
+	return Release{
+		myRelease{
+			Owner:          owner,
+			RepoName:       repoName,
+			CurrentVersion: currentVersion,
+		},
+	}
 }
 
 func (rd *Release) IsLatestVersion() (error, bool) {
@@ -77,19 +77,6 @@ func (rd *Release) SelfUpgrade() error {
 
 // -------------------------------------------------------------
 
-func (rd *myRelease) latestReleaseUrl() string {
-	releasesUrl := "https://api.github.com/repos/" + rd.Owner + "/" + rd.RepoName + "/releases"
-	return releasesUrl + "/latest"
-}
-
-func (rd *myRelease) tarballFilename() string {
-	return rd.RepoName + "_" + rd.LatestTag + "_" + runtime.GOOS + "_" + runtime.GOARCH + ".tar.gz"
-}
-
-func (rd *myRelease) latestTarballUrl() string {
-	return "https://github.com/" + rd.Owner + "/" + rd.RepoName + "/releases/download/" + rd.LatestTag + "/" + rd.tarballFilename()
-}
-
 func (rd *myRelease) getLatestReleaseInfo() error {
 	err, body := rd.getLatestReleaseJson()
 	if err != nil {
@@ -133,4 +120,16 @@ func (rd *myRelease) downloadFile(filepath string, url string) error {
 	// Write the body to file
 	_, err = io.Copy(out, resp.Body)
 	return err
+}
+
+func (rd *myRelease) tarballFilename() string {
+	return rd.RepoName + "_" + rd.LatestTag + "_" + runtime.GOOS + "_" + runtime.GOARCH + ".tar.gz"
+}
+
+func (rd *myRelease) latestTarballUrl() string {
+	return fmt.Sprintf("https://github.com/%s/%s/releases/download/%s/%s", rd.Owner, rd.RepoName, rd.LatestTag, rd.tarballFilename())
+}
+
+func (rd *myRelease) latestReleaseUrl() string {
+	return fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", rd.Owner, rd.RepoName)
 }
