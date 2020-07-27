@@ -35,7 +35,7 @@ func (rd *Release) IsLatestVersion() (error, bool) {
 	return nil, rd.LatestTag == rd.CurrentVersion
 }
 
-func (rd *Release) SelfUpdate() error {
+func (rd *Release) SelfUpgrade() error {
 	fmt.Printf("Update required. Current version: %s, Latest version: %s\n\n", rd.CurrentVersion, rd.LatestTag)
 
 	// download tarball of latest release

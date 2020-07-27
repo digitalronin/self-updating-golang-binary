@@ -18,7 +18,7 @@ func main() {
 	if latest {
 		fmt.Println("This is the latest version")
 	} else {
-		err := rd.SelfUpdate()
+		err := rd.SelfUpgrade()
 		if err != nil {
 			fmt.Printf("Unexpected error: %s\n", err)
 			os.Exit(1)
