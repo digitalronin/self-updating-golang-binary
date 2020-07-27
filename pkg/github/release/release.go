@@ -20,7 +20,7 @@ type Release struct {
 // correctly. But we don't want them to be exported to callers of this package,
 // so we wrap them in a private, innner struct which is not exported.
 type myRelease struct {
-  releaseJson    []byte
+	releaseJson    []byte
 	Owner          string
 	RepoName       string
 	CurrentVersion string
@@ -40,13 +40,13 @@ func New(owner string, repoName string, currentVersion string) Release {
 func (r *Release) UpgradeIfNotLatest() {
 	err, latest := r.isLatestVersion()
 	if err == nil && latest {
-    return
-  } else if err == nil {
+		return
+	} else if err == nil {
 		err = r.selfUpgrade()
-  }
+	}
 
-  fmt.Printf(err.Error())
-  os.Exit(1)
+	fmt.Printf(err.Error())
+	os.Exit(1)
 }
 
 // -------------------------------------------------------------
@@ -103,20 +103,20 @@ func (r *myRelease) getLatestReleaseInfo() error {
 }
 
 func (r *myRelease) getLatestReleaseJson() (error, []byte) {
-  body := r.releaseJson
+	body := r.releaseJson
 
-  if len(body) == 0 {
-    response, err := http.Get(r.latestReleaseUrl())
-    if err != nil {
-      return err, nil
-    }
-    body, err := ioutil.ReadAll(response.Body)
-    if err != nil {
-      return err, nil
-    }
+	if len(body) == 0 {
+		response, err := http.Get(r.latestReleaseUrl())
+		if err != nil {
+			return err, nil
+		}
+		body, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			return err, nil
+		}
 
-    r.releaseJson = body
-  }
+		r.releaseJson = body
+	}
 
 	return nil, r.releaseJson
 }
