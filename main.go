@@ -11,14 +11,14 @@ func main() {
 
 	// CurrentVersion should be the tag of the release this version of the code
 	// will belong to
-	rd := release.New("digitalronin", "self-updating-golang-binary", "0.03")
+	r := release.New("digitalronin", "self-updating-golang-binary", "0.03")
 
-	_, latest := rd.IsLatestVersion()
+	_, latest := r.IsLatestVersion()
 
 	if latest {
 		fmt.Println("This is the latest version")
 	} else {
-		err := rd.SelfUpgrade()
+		err := r.SelfUpgrade()
 		if err != nil {
 			fmt.Printf("Unexpected error: %s\n", err)
 			os.Exit(1)
