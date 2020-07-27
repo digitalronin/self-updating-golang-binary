@@ -18,6 +18,14 @@ type Release struct {
 	LatestTag      string `json:"tag_name"`
 }
 
+func New(owner string, repoName string, currentVersion string) Release {
+  return Release{
+    Owner: owner,
+    RepoName: repoName,
+    CurrentVersion: currentVersion,
+  }
+}
+
 func (rd *Release) IsLatestVersion() (error, bool) {
 	err := rd.getLatestReleaseInfo() // TODO: memoize this
 	if err != nil {

@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	release "github.com/digitalronin/self-updating-golang-binary/pkg/github/release"
 	"os"
-  release "github.com/digitalronin/self-updating-golang-binary/pkg/github/release"
 )
 
 func main() {
@@ -11,11 +11,7 @@ func main() {
 
 	// CurrentVersion should be the tag of the release this version of the code
 	// will belong to
-	rd := release.Release{
-		RepoName:       "self-updating-golang-binary",
-		Owner:          "digitalronin",
-		CurrentVersion: "0.0.3",
-	}
+	rd := release.New("digitalronin", "self-updating-golang-binary", "0.03")
 
 	_, latest := rd.IsLatestVersion()
 
