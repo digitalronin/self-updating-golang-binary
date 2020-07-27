@@ -2,6 +2,7 @@ package release
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -34,6 +35,18 @@ func New(owner string, repoName string, currentVersion string) Release {
 			CurrentVersion: currentVersion,
 		},
 	}
+}
+
+func (r *Release) UpgradeIfNotLatest() {
+	err, latest := r.IsLatestVersion()
+	if err == nil && latest {
+    return
+  } else if err == nil {
+		err = r.SelfUpgrade()
+  }
+
+  fmt.Printf(err.Error())
+  os.Exit(1)
 }
 
 func (r *Release) IsLatestVersion() (error, bool) {
@@ -71,9 +84,7 @@ func (r *Release) SelfUpgrade() error {
 		return err
 	}
 
-	fmt.Printf("Upgrade successful. Please repeat your previous command.\n")
-
-	return nil
+	return errors.New("Upgrade successful. Please repeat your previous command.\n")
 }
 
 // -------------------------------------------------------------
