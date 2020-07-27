@@ -15,11 +15,11 @@ type releaseData struct {
 	Owner          string
 	RepoName       string
 	CurrentVersion string
-	latestTag      string `json:"tag_name"`
+	LatestTag      string `json:"tag_name"`
 }
 
 func (rd *releaseData) SelfUpdate() error {
-	fmt.Printf("Update required. Current version: %s, Latest version: %s\n\n", rd.CurrentVersion, rd.latestTag)
+	fmt.Printf("Update required. Current version: %s, Latest version: %s\n\n", rd.CurrentVersion, rd.LatestTag)
 
 	// download tarball of latest release
 	tempFilePath := "/tmp/" + rd.tarballFilename()
@@ -62,11 +62,11 @@ func (rd *releaseData) latestReleaseUrl() string {
 // }
 
 func (rd *releaseData) tarballFilename() string {
-	return rd.RepoName + "_" + rd.latestTag + "_" + runtime.GOOS + "_" + runtime.GOARCH + ".tar.gz"
+	return rd.RepoName + "_" + rd.LatestTag + "_" + runtime.GOOS + "_" + runtime.GOARCH + ".tar.gz"
 }
 
 func (rd *releaseData) latestTarballUrl() string {
-	return "https://github.com/" + rd.Owner + "/" + rd.RepoName + "/releases/download/" + rd.latestTag + "/" + rd.tarballFilename()
+	return "https://github.com/" + rd.Owner + "/" + rd.RepoName + "/releases/download/" + rd.LatestTag + "/" + rd.tarballFilename()
 }
 
 func (rd *releaseData) isLatestVersion() (error, bool) {
@@ -75,7 +75,7 @@ func (rd *releaseData) isLatestVersion() (error, bool) {
 		return err, false
 	}
 
-	return nil, rd.latestTag == rd.CurrentVersion
+	return nil, rd.LatestTag == rd.CurrentVersion
 }
 
 func (rd *releaseData) getLatestReleaseInfo() error {
