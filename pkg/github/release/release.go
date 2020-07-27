@@ -38,18 +38,20 @@ func New(owner string, repoName string, currentVersion string) Release {
 }
 
 func (r *Release) UpgradeIfNotLatest() {
-	err, latest := r.IsLatestVersion()
+	err, latest := r.isLatestVersion()
 	if err == nil && latest {
     return
   } else if err == nil {
-		err = r.SelfUpgrade()
+		err = r.selfUpgrade()
   }
 
   fmt.Printf(err.Error())
   os.Exit(1)
 }
 
-func (r *Release) IsLatestVersion() (error, bool) {
+// -------------------------------------------------------------
+
+func (r *Release) isLatestVersion() (error, bool) {
 	err := r.innerStruct.getLatestReleaseInfo() // TODO: memoize this
 	if err != nil {
 		return err, false
@@ -58,7 +60,7 @@ func (r *Release) IsLatestVersion() (error, bool) {
 	return nil, r.innerStruct.LatestTag == r.innerStruct.CurrentVersion
 }
 
-func (r *Release) SelfUpgrade() error {
+func (r *Release) selfUpgrade() error {
 	fmt.Printf("Update required. Current version: %s, Latest version: %s\n\n", r.innerStruct.CurrentVersion, r.innerStruct.LatestTag)
 
 	// download tarball of latest release

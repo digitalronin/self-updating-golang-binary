@@ -10,7 +10,7 @@ func TestRunningCurrentVersion(t *testing.T) {
   json, _ := ioutil.ReadFile("fixtures/9.10.11-version.json")
   r.innerStruct.releaseJson = json
 
-  _, latest := r.IsLatestVersion()
+  _, latest := r.isLatestVersion()
   if !latest {
     t.Errorf("Expected version to be latest")
   }
