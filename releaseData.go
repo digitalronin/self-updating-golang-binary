@@ -20,8 +20,8 @@ type releaseData struct {
 func (rd *releaseData) SelfUpdate() error {
 	fmt.Println("SelfUpdate...")
 	tempFilePath := "/tmp/" + rd.tarballFilename()
-  rd.downloadFile(tempFilePath, rd.latestTarballUrl())
 	fmt.Printf("Downloading %s to %s\n", rd.latestTarballUrl(), tempFilePath)
+	rd.downloadFile(tempFilePath, rd.latestTarballUrl())
 
 	return nil
 }
@@ -43,7 +43,7 @@ func (rd *releaseData) tarballFilename() string {
 }
 
 func (rd *releaseData) latestTarballUrl() string {
-	return "https://github.com/" + rd.Owner + "/" + rd.tarballFilename()
+	return "https://github.com/" + rd.Owner + "/" + rd.RepoName + "/releases/download/" + rd.LatestTag + "/" + rd.tarballFilename()
 }
 
 func (rd *releaseData) isLatestVersion() (error, bool) {
