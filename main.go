@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Self-updating golang binary")
+	fmt.Printf("Self-updating golang binary demo.\n\n")
 
 	// CurrentVersion should be the tag of the release this version of the code
 	// will belong to
@@ -21,9 +21,6 @@ func main() {
 	if latest {
 		fmt.Printf("This is the latest version: %s\n", rd.LatestTag)
 	} else {
-		fmt.Printf("Current version: %s, Latest version: %s\n", rd.CurrentVersion, rd.LatestTag)
-		fmt.Println("Update required")
-
 		err := rd.SelfUpdate()
 		if err != nil {
 			fmt.Printf("Unexpected error: %s\n", err)

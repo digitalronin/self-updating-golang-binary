@@ -19,30 +19,32 @@ type releaseData struct {
 }
 
 func (rd *releaseData) SelfUpdate() error {
-	fmt.Println("SelfUpdate...")
+	fmt.Printf("Update required. Current version: %s, Latest version: %s\n\n", rd.CurrentVersion, rd.LatestTag)
 
-  // download tarball of latest release
+	// download tarball of latest release
 	tempFilePath := "/tmp/" + rd.tarballFilename()
-	fmt.Printf("Downloading %s to %s\n", rd.latestTarballUrl(), tempFilePath)
+
+	fmt.Printf("Downloading latest tarball...\n  %s\n", rd.latestTarballUrl())
 	rd.downloadFile(tempFilePath, rd.latestTarballUrl())
 
-  fmt.Println("Unpacking the tarball...")
-
-  // unpack tarball into /tmp/
-  cmd := exec.Command("tar", "xzf", tempFilePath, "--cd", "/tmp/")
-  err := cmd.Run()
-  if err != nil {
-    fmt.Println("Error: ", err)
-    return err
-  }
+	fmt.Println("Unpacking...")
+	cmd := exec.Command("tar", "xzf", tempFilePath, "--cd", "/tmp/")
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Error: ", err)
+		return err
+	}
 
 	// move unpacked binary into place
 	filename, _ := os.Executable()
-  cmd = exec.Command("mv", "/tmp/myapp", filename)
-  err = cmd.Run()
-  if err != nil {
-    return err
-  }
+	fmt.Printf("Replacing %s\n\n", filename)
+	cmd = exec.Command("mv", "/tmp/myapp", filename)
+	err = cmd.Run()
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Upgrade successful. Please repeat your previous command.\n")
 
 	return nil
 }
