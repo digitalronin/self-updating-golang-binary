@@ -9,8 +9,15 @@ import (
 )
 
 type releaseData struct {
+  Owner string
+  RepoName string
 	CurrentVersion string
 	LatestTag string `json:"tag_name"`
+}
+
+func (rd *releaseData) latestReleaseUrl() string {
+  releasesUrl := "https://api.github.com/repos/" + rd.Owner + "/" + rd.RepoName + "/releases"
+  return releasesUrl + "/latest"
 }
 
 // TODO: get this working next
@@ -21,21 +28,20 @@ type releaseData struct {
 // }
 
 func (rd *releaseData) tarballFilename() string {
-	return repoName + "_" + rd.LatestTag + "_" + runtime.GOOS + "_" + runtime.GOARCH + ".tar.gz"
+	return rd.RepoName + "_" + rd.LatestTag + "_" + runtime.GOOS + "_" + runtime.GOARCH + ".tar.gz"
 }
 
 func (rd *releaseData) latestTarballUrl() string {
-	return "https://github.com/" + owner + "/" + rd.tarballFilename()
+	return "https://github.com/" + rd.Owner + "/" + rd.tarballFilename()
 }
 
 func (rd *releaseData) isLatestVersion() (error, bool) {
-  // move this method into this class
-	err := rd.getLatestReleaseInfo()
+  err := rd.getLatestReleaseInfo() // TODO: memoize this
 	if err != nil {
 		return err, false
 	}
 	fmt.Println(rd.latestTarballUrl())
-	return nil, rd.LatestTag == version
+	return nil, rd.LatestTag == rd.CurrentVersion
 }
 
 func (rd *releaseData) getLatestReleaseInfo() error {
@@ -50,7 +56,7 @@ func (rd *releaseData) getLatestReleaseInfo() error {
 }
 
 func (rd *releaseData) getLatestReleaseJson() (error, []byte) {
-	response, err := http.Get(latestReleaseUrl)
+	response, err := http.Get(rd.latestReleaseUrl())
 	if err != nil {
 		return err, nil
 	}

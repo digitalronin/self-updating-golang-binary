@@ -5,25 +5,18 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"runtime"
 )
-
-// version should be the tag of the release this version of the code will
-// belong to
-const version = "0.0.1"
-const owner = "digitalronin"
-const repoName = "self-updating-golang-binary"
-
-const releasesUrl = "https://api.github.com/repos/" + owner + "/" + repoName + "/releases"
-const latestReleaseUrl = releasesUrl + "/latest"
-
 
 func main() {
 	fmt.Println("Self-updating golang binary")
-	fmt.Println(runtime.GOOS)
-	fmt.Println(runtime.GOARCH)
 
-  rd := releaseData{CurrentVersion: version}
+  // CurrentVersion should be the tag of the release this version of the code
+  // will belong to
+  rd := releaseData{
+    RepoName: "self-updating-golang-binary",
+    Owner: "digitalronin",
+    CurrentVersion: "0.0.1",
+  }
 
 	_, latest := rd.isLatestVersion()
 
