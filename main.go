@@ -19,7 +19,7 @@ func main() {
 	_, latest := rd.isLatestVersion()
 
 	if latest {
-		fmt.Printf("This is the latest version: %s\n", rd.LatestTag)
+		fmt.Println("This is the latest version")
 	} else {
 		err := rd.SelfUpdate()
 		if err != nil {
