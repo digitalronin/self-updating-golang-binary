@@ -6,7 +6,7 @@ import (
 )
 
 func TestRunningCurrentVersion(t *testing.T) {
-	r := New("owner", "reponame", "9.10.11")
+	r := New("owner", "reponame", "9.10.11", "myapp")
 	json, _ := ioutil.ReadFile("fixtures/9.10.11-version.json")
 	r.innerStruct.releaseJson = json
 
@@ -17,7 +17,7 @@ func TestRunningCurrentVersion(t *testing.T) {
 }
 
 func TestTarballFilename(t *testing.T) {
-	r := New("owner", "reponame", "9.10.11")
+	r := New("owner", "reponame", "9.10.11", "myapp")
 	json, _ := ioutil.ReadFile("fixtures/9.10.11-version.json")
 	r.innerStruct.releaseJson = json
 	r.innerStruct.getLatestReleaseInfo()
@@ -30,7 +30,7 @@ func TestTarballFilename(t *testing.T) {
 }
 
 func TestLatestTarballUrl(t *testing.T) {
-	r := New("owner", "reponame", "9.10.11")
+	r := New("owner", "reponame", "9.10.11", "myapp")
 	json, _ := ioutil.ReadFile("fixtures/9.10.11-version.json")
 	r.innerStruct.releaseJson = json
 	r.innerStruct.getLatestReleaseInfo()
@@ -44,7 +44,7 @@ func TestLatestTarballUrl(t *testing.T) {
 }
 
 func TestLatestReleaseUrl(t *testing.T) {
-	r := New("owner", "reponame", "9.10.11")
+	r := New("owner", "reponame", "9.10.11", "myapp")
 
 	url := r.innerStruct.latestReleaseUrl()
 	expected := "https://api.github.com/repos/owner/reponame/releases/latest"
