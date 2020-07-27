@@ -19,6 +19,7 @@ type Release struct {
 // correctly. But we don't want them to be exported to callers of this package,
 // so we wrap them in a private, innner struct which is not exported.
 type myRelease struct {
+  releaseJson    []byte
 	Owner          string
 	RepoName       string
 	CurrentVersion string
@@ -89,15 +90,22 @@ func (r *myRelease) getLatestReleaseInfo() error {
 }
 
 func (r *myRelease) getLatestReleaseJson() (error, []byte) {
-	response, err := http.Get(r.latestReleaseUrl())
-	if err != nil {
-		return err, nil
-	}
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return err, nil
-	}
-	return nil, body
+  body := r.releaseJson
+
+  if len(body) == 0 {
+    response, err := http.Get(r.latestReleaseUrl())
+    if err != nil {
+      return err, nil
+    }
+    body, err := ioutil.ReadAll(response.Body)
+    if err != nil {
+      return err, nil
+    }
+
+    r.releaseJson = body
+  }
+
+	return nil, r.releaseJson
 }
 
 // DownloadFile will download a url to a local file. It's efficient because it will
