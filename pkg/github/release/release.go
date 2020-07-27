@@ -14,6 +14,7 @@ import (
 
 type Release struct {
 	innerStruct myRelease
+	BinaryName  string
 }
 
 // These attributes need to be exported so that the json.Unmarshal call works
@@ -27,13 +28,15 @@ type myRelease struct {
 	LatestTag      string `json:"tag_name"`
 }
 
-func New(owner string, repoName string, currentVersion string) Release {
+func New(owner string, repoName string, currentVersion string, binaryName string) Release {
+	innerStruct := myRelease{
+		Owner:          owner,
+		RepoName:       repoName,
+		CurrentVersion: currentVersion,
+	}
 	return Release{
-		myRelease{
-			Owner:          owner,
-			RepoName:       repoName,
-			CurrentVersion: currentVersion,
-		},
+		BinaryName:  binaryName,
+		innerStruct: innerStruct,
 	}
 }
 
@@ -80,7 +83,7 @@ func (r *Release) selfUpgrade() error {
 	// move unpacked binary into place
 	filename, _ := os.Executable()
 	fmt.Printf("Replacing %s\n\n", filename)
-	cmd = exec.Command("mv", "/tmp/myapp", filename)
+	cmd = exec.Command("mv", fmt.Sprintf("/tmp/%s", r.BinaryName), filename)
 	err = cmd.Run()
 	if err != nil {
 		return err

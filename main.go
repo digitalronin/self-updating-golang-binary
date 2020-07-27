@@ -12,6 +12,6 @@ func main() {
 
 	// CurrentVersion should be the tag of the release this version of the code
 	// will belong to
-	r := release.New("digitalronin", "self-updating-golang-binary", version)
-  r.UpgradeIfNotLatest()
+	r := release.New("digitalronin", "self-updating-golang-binary", version, "myapp")
+	r.UpgradeIfNotLatest()
 }
