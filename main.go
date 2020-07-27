@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+  release "github.com/digitalronin/self-updating-golang-binary/pkg/github/release"
 )
 
 func main() {
@@ -10,10 +11,10 @@ func main() {
 
 	// CurrentVersion should be the tag of the release this version of the code
 	// will belong to
-	rd := releaseData{
+	rd := release{
 		RepoName:       "self-updating-golang-binary",
 		Owner:          "digitalronin",
-		CurrentVersion: "0.0.4",
+		CurrentVersion: "0.0.3",
 	}
 
 	_, latest := rd.isLatestVersion()

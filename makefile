@@ -1,2 +1,2 @@
-myapp: go.mod *.go makefile
+myapp: go.mod *.go pkg/*/*.go makefile
 	go build -o myapp
